@@ -2,7 +2,7 @@ const db = require("../connection");
 const format = require("pg-format");
 const {
   convertTimestampToDate,
-  createRef,
+  createLookup,
   formatComments,
 } = require("./utils");
 
@@ -83,15 +83,13 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     db.query(insertTopicsDataQuery),
   ]);
 
-  const formattedArticleData = articleData.map(convertTimestampToDate);
-
   const insertArticlesDataQuery = format(
     `INSERT INTO articles
       (title, topic, author, body, created_at, votes, article_img_url)
     VALUES
       %L
     RETURNING *;`,
-    formattedArticleData.map((article) => {
+    articleData.map((article) => {
       return [
         article.title,
         article.topic,
@@ -105,9 +103,7 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   );
 
   const articleRows = await db.query(insertArticlesDataQuery);
-
-  const articleIdLookup = createRef(articleRows.rows, "title", "article_id");
-
+  const articleIdLookup = createLookup(articleRows.rows, "title", "article_id");
   const formattedCommentData = formatComments(commentData, articleIdLookup);
 
   const insertCommentsDataQuery = format(
