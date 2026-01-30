@@ -9,8 +9,11 @@ const {
 const seed = async ({ topicData, userData, articleData, commentData }) => {
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS articles;`);
-  await db.query(`DROP TABLE IF EXISTS users;`);
-  await db.query(`DROP TABLE IF EXISTS topics;`);
+  await Promise.all([
+    db.query(`DROP TABLE IF EXISTS users;`),
+    db.query(`DROP TABLE IF EXISTS topics;`),
+    db.query(`DROP TABLE IF EXISTS emojis`),
+  ]);
 
   const usersTablePromise = db.query(`
     CREATE TABLE users (
@@ -30,7 +33,17 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     `);
   // img_url VARCHAR(1000) DEFAULT 'https://images.pexels.com/photos/11035471/pexels-photo-11035471.jpeg'
 
-  await Promise.all([usersTablePromise, topicsTablePromise]);
+  const emojisTablePromise = db.query(`
+    CREATE TABLE emojis (
+      emoji_id PRIMARY KEY,
+      emoji VARCHAR NOT NULL,
+    );
+    `);
+
+  await Promise.all(
+    [usersTablePromise, topicsTablePromise],
+    emojisTablePromise,
+  );
 
   await db.query(`
     CREATE TABLE articles (

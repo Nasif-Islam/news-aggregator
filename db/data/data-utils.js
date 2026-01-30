@@ -61,18 +61,25 @@ function generateTestEmojiArticleUserData(
   maxEmojiId,
 ) {
   const data = [];
+  const uniqueSet = new Set();
 
-  for (let i = 0; i < numOfRows; i++) {
+  while (data.length < numOfRows) {
     const randomUserId = Math.floor(Math.random() * totalUsers) + 1;
     const randomArticleId = Math.floor(Math.random() * totalArticles) + 1;
     const randomEmojiId = Math.floor(Math.random() * maxEmojiId) + 1;
+    const uniqueKey = `${randomUserId}-${randomArticleId}-${randomEmojiId}`;
 
-    data.push({
-      emoji_article_user_id: i + 1,
-      emoji_id: randomEmojiId,
-      username: `user_${randomUserId}`,
-      article_id: randomArticleId,
-    });
+    if (!uniqueSet.has(uniqueKey)) {
+      uniqueSet.add(uniqueKey);
+      data.push({
+        emoji_article_user_id: data.length + 1,
+        emoji_id: randomEmojiId,
+        username: `user_${randomUserId}`,
+        article_id: randomArticleId,
+      });
+    }
+
+    if (uniqueSet.size >= totalUsers * totalArticles * maxEmojiId) break;
   }
 
   return data;
@@ -80,16 +87,24 @@ function generateTestEmojiArticleUserData(
 
 function generateTestUserTopicData(numOfRows, totalUsers, totalTopics) {
   const data = [];
+  const uniqueSet = new Set();
 
-  for (let i = 0; i < numOfRows; i++) {
-    const userId = (i % totalUsers) + 1;
-    const topicId = (i % totalTopics) + 1;
+  while (data.length < numOfRows) {
+    const userId = Math.floor(Math.random() * totalUsers) + 1;
+    const topicId = Math.floor(Math.random() * totalTopics) + 1;
+    const uniqueKey = `${userId}-${topicId}`;
 
-    data.push({
-      user_topic_id: i + 1,
-      username: `user_${userId}`,
-      topic: `topic_${topicId}`,
-    });
+    if (!uniqueSet.has(uniqueKey)) {
+      uniqueSet.add(uniqueKey);
+
+      data.push({
+        user_topic_id: data.length + 1,
+        username: `user_${userId}`,
+        topic: `topic_${topicId}`,
+      });
+    }
+
+    if (uniqueSet.size >= totalUsers * totalTopics) break;
   }
 
   return data;
@@ -97,20 +112,28 @@ function generateTestUserTopicData(numOfRows, totalUsers, totalTopics) {
 
 function generateTestUserArticleVotes(numOfRows, totalUsers, totalArticles) {
   const data = [];
+  const uniqueSet = new Set();
 
-  for (let i = 0; i < numOfRows; i++) {
+  while (data.length < numOfRows) {
     const min = -50;
     const max = 50;
     const randomVoteCount = Math.floor(Math.random() * (max - min + 1) + min);
     const randomArticleId = Math.floor(Math.random() * totalArticles) + 1;
     const randomUserId = Math.floor(Math.random() * totalUsers) + 1;
+    const uniqueKey = `${randomUserId}-${randomArticleId}`;
 
-    data.push({
-      user_article_votes_id: i + 1,
-      username: `user_${randomUserId}`,
-      article_id: randomArticleId,
-      vote_count: randomVoteCount,
-    });
+    if (!uniqueSet.has(uniqueKey)) {
+      uniqueSet.add(uniqueKey);
+
+      data.push({
+        user_article_votes_id: data.length + 1,
+        username: `user_${randomUserId}`,
+        article_id: randomArticleId,
+        vote_count: randomVoteCount,
+      });
+    }
+
+    if (uniqueSet.size >= totalUsers * totalArticles) break;
   }
 
   return data;
@@ -128,7 +151,7 @@ function saveDataToFile(fileName, data) {
   const fileContent = `module.exports = ${JSON.stringify(data, null, 2)};`;
   fs.writeFileSync(filePath, fileContent);
 
-  return 1;
+  return filePath;
 }
 
 if (require.main === module) {
