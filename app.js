@@ -11,10 +11,8 @@ app.all("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.msg || "Internal Server Error";
-
-  res.status(status).send({ msg: message });
+  const { status = 500, msg = "Internal Server Error" } = err;
+  res.status(status).send({ msg: msg });
 });
 
 module.exports = app;
