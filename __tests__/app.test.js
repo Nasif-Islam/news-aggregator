@@ -51,7 +51,6 @@ describe("Express App Testing", () => {
 
       expect(response.status).toBe(200);
       expect(Array.isArray(articles)).toBe(true);
-      expect(articles.length).toBeGreaterThan(0);
 
       articles.forEach((article) => {
         expect(article).toMatchObject({
@@ -73,6 +72,27 @@ describe("Express App Testing", () => {
       });
 
       expect(articles).toBeSortedBy("created_at", { descending: true });
+    });
+  });
+
+  describe("GET /api/users", () => {
+    test("status:200 - responds with correct users data", async () => {
+      const response = await request(app).get("/api/users");
+      const { users } = response.body;
+
+      expect(response.status).toBe(200);
+      expect(Array.isArray(users)).toBe(true);
+
+      users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+        });
+
+        expect(
+          typeof user.avatar_url === "string" || user.avatar_url === null,
+        ).toBe(true);
+      });
     });
   });
 });

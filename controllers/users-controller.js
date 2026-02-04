@@ -1,6 +1,6 @@
-const { fetchTopics } = require("../models/users-model");
+const { getUsersService } = require("../services/users-service");
 
-exports.getTopics = async (req, res, next) => {
-  const topics = await fetchTopics();
-  res.status(200).send({ topics: topics });
+exports.getUsers = async (req, res, next) => {
+  const users = await getUsersService();
+  res.status(200).send({ users: users });
 };

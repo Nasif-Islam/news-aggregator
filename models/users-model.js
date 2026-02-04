@@ -1,9 +1,6 @@
 const db = require("../db/connection");
 
-async function getUsers() {
-  const res = await db.query(`
-        SELECT username FROM users;
-        `);
-
-  return res.rows;
-}
+exports.fetchUsers = async () => {
+  const { rows } = await db.query(`SELECT * FROM users;`);
+  return rows;
+};
