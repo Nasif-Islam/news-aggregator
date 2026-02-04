@@ -1,8 +1,7 @@
-const {} = require("../services/users.services");
+const { fetchTopics } = require("../models/users.model");
 
-exports.functionName = (req, res) => {
-  functionFromService().then((data) => {
-    // retrieve logic from service layer
-    res.status(200).send({ data }); // return an appropriate response
-  });
+exports.getTopics = async (req, res, next) => {
+  const topics = await fetchTopics();
+
+  res.status(200).send({ topics: topics });
 };

@@ -1,4 +1,5 @@
-const express = require("express");
-const {} = require("../controllers/....");
+const usersRouter = require("express").Router();
 
-const router = 
+const { getUsers } = require("../controllers/users.controller");
+
+usersRouter.get("api/users", getUsers);
