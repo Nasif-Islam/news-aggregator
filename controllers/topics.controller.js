@@ -1,6 +1,8 @@
-const { fetchTopics } = require("../models/topics.model");
+// just handle http
+
+const { getTopics: getTopicsService } = require("../services/topics.service");
 
 exports.getTopics = async (req, res, next) => {
-  const topics = await fetchTopics();
+  const topics = await getTopicsService();
   res.status(200).send({ topics: topics });
 };
