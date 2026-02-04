@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
+require("jest-sorted");
 
 beforeEach(() => {
   return seed(testData);
@@ -58,15 +59,20 @@ describe("Express App Testing", () => {
           title: expect.any(String),
           topic: expect.any(String),
           author: expect.any(String),
-          body: expect.any(String),
           created_at: expect.any(String), // JSON dates = string not date
           votes: expect.any(Number),
+          comment_count: expect.any(Number),
         });
+
         expect(
           typeof article.article_img_url === "string" ||
-            article.article_imd_url === null,
+            article.article_img_url === null,
         ).toBe(true);
+
+        expect(article).not.toHaveProperty("body");
       });
+
+      expect(articles).toBeSortedBy("created_at", { descending: true });
     });
   });
 });
