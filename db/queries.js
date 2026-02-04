@@ -1,18 +1,5 @@
 const db = require("./connection");
 
-// Immediately Invoked Function Expression
-// Anonymous async function - wrap in brackets to make it an expressed, then call it immediately
-// (async () => {
-//   try {
-//     const users = await getUsers();
-//     console.log(users);
-//   } catch (err) {
-//     console.log(err);
-//   } finally {
-//     db.end();
-//   }
-// })();
-
 async function logQueryResults(promise) {
   try {
     const data = await promise;
